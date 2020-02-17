@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
-
+const bcrypt = require("bcryptjs")
 
 const equipmentSchema = new Schema({
     armor: {
@@ -27,7 +27,6 @@ const characterSchema = new Schema({
     job: {
         type: String,
         enum: ["Warrior", "Thief", "Mage"],
-        required: true
     },
 
     equipment: { equipmentSchema },
@@ -58,5 +57,12 @@ const userSchema = new Schema({
 
     characters: [characterSchema]
 
+
+})
+
+userSchema.pre("save", async function (next) {
+    const rounds = 10
+    this.password = await bcrypt.hash(this.password, rounds)
+    next()
 
 })
