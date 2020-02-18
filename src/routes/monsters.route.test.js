@@ -80,7 +80,6 @@ describe("test cases for monsters route", () => {
                     defence: 11,
                     loot: ["meat", "fang sword"]
                 }).expect(201)
-            expect(monster.monster_id).toBe("3")
             expect(monster.name).toBe("Wolf")
             expect(monster.attack).toBe(12)
             expect(monster.defence).toBe(11)

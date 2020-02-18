@@ -18,7 +18,7 @@ router.get("/", async (req, res, next) => {
                 ${CHARACTERS_FIELD_IN_USER}.${JOB_FIELD_IN_CHARACTERS}`
             );
 
-        const characters = users.flatMap(user => user.characters)
+        const characters = users.flatMap(user => user.characters).sort()
         res.status(200).json(characters)
     } catch (err) {
         next(err)

@@ -1,13 +1,18 @@
 const express = require("express")
 const app = express()
+const cookieParser = require("cookie-parser");
+require("dotenv").config() //read the env file
+
 
 app.use(express.json())
+app.use(cookieParser());
 
 const monsterRouter = require("./routes/monsters.route")
 app.use("/monsters", monsterRouter)
 const characterRouter = require("./routes/characters.route")
 app.use("/characters", characterRouter)
-
+const userRouter = require('./routes/users.route')
+app.use("/users", userRouter)
 
 app.get("/", (req, res) => {
     res.send({
@@ -24,7 +29,6 @@ app.get("/", (req, res) => {
         "10": "GET /users/:username/stats",
         "11": "GET /users/:username/battle",
         "12": "PATCH /users/:username/profile",
-        "13": "GET /jobs/:name"
     })
 })
 
