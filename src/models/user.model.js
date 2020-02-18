@@ -18,7 +18,7 @@ const characterSchema = new Schema({
         unique: true,
         lowercase: true
     },
-    character_name: {
+    name: {
         type: String,
         required: true,
         unique: true,
@@ -27,9 +27,15 @@ const characterSchema = new Schema({
     job: {
         type: String,
         enum: ["Warrior", "Thief", "Mage"],
+        required: true
     },
 
-    equipment: { equipmentSchema },
+    equipments: { equipmentSchema },
+
+    level: {
+        type: Number,
+        default: 1
+    },
 
     exp: {
         type: Number,
@@ -56,13 +62,14 @@ const userSchema = new Schema({
     },
 
     characters: [characterSchema]
-
-
 })
 
 userSchema.pre("save", async function (next) {
     const rounds = 10
     this.password = await bcrypt.hash(this.password, rounds)
     next()
-
 })
+
+const User = mongoose.model("User", userSchema)
+
+module.exports = User

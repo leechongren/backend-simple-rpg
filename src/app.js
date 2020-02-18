@@ -5,6 +5,8 @@ app.use(express.json())
 
 const monsterRouter = require("./routes/monsters.route")
 app.use("/monsters", monsterRouter)
+const characterRouter = require("./routes/characters.route")
+app.use("/characters", characterRouter)
 
 
 app.get("/", (req, res) => {
