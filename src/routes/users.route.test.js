@@ -35,36 +35,10 @@ describe("test cases for characters route", () => {
             id: "1",
             username: "testuser1",
             password: "abcd1234",
-            characters: [{
-                character_id: "1",
-                name: "testchar1",
-                job: "Warrior",
-                equipments: {
-                    armor: "cloth",
-                    weapon: "axe"
-                }
-            }]
         }, {
             id: "2",
             username: "testuser2",
             password: "abcd1234",
-            characters: [{
-                character_id: "2",
-                name: "testchar2",
-                job: "Warrior",
-                equipments: {
-                    armor: "cloth",
-                    weapon: "sword"
-                }
-            }, {
-                character_id: "3",
-                name: "testchar3",
-                job: "Mage",
-                equipments: {
-                    armor: "cloth",
-                    weapon: "wand"
-                }
-            }]
         }];
         await User.create(usersData);
     });
