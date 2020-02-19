@@ -45,7 +45,7 @@ const characterSchema = new Schema({
 })
 
 const userSchema = new Schema({
-    user_id: {
+    id: {
         type: String,
         required: true,
         unique: true,

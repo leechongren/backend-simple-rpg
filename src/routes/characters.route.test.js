@@ -29,7 +29,7 @@ describe("test cases for characters route", () => {
 
     beforeEach(async () => {
         const usersData = [{
-            user_id: "1",
+            id: "1",
             username: "testuser1",
             password: "abcd1234",
             characters: [{
@@ -42,7 +42,7 @@ describe("test cases for characters route", () => {
                 }
             }]
         }, {
-            user_id: "2",
+            id: "2",
             username: "testuser2",
             password: "abcd1234",
             characters: [{
