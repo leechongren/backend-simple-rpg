@@ -8,7 +8,7 @@ const equipmentSchema = new Schema({
     weapon: {
         type: String
     }
-})
+}, { _id: false })
 
 const characterSchema = new Schema({
     id: {
@@ -33,7 +33,7 @@ const characterSchema = new Schema({
         required: true
     },
 
-    equipments: { equipmentSchema },
+    equipments: equipmentSchema,
 
     level: {
         type: Number,
