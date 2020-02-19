@@ -11,7 +11,8 @@ const userSchema = new Schema({
     },
     username: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -19,7 +20,6 @@ const userSchema = new Schema({
         minlength: 8
     },
 
-    // characters: [characterSchema]
 })
 
 userSchema.pre("save", async function (next) {

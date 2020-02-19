@@ -4,7 +4,7 @@ const { protectRoute } = require("../middlewares/authentication")
 const bcrypt = require("bcryptjs")
 const User = require("../models/user.model")
 const { createJWToken } = require("../config/jwt")
-
+const Character = require("../models/character.model")
 //register new user
 router.post("/register", async (req, res, next) => {
     try {
@@ -62,6 +62,21 @@ router.get("/:username", protectRoute, async (req, res, next) => {
             err.statusCode = 403;
         }
 
+        next(err)
+    }
+})
+
+router.get("/:username/characters", protectRoute, async (req, res, next) => {
+    const INCORRECT_USER_MSG = "Incorrect user!"
+    try {
+        const username = req.params.username
+        if (req.user.name !== username) {
+            throw new Error(INCORRECT_USER_MSG)
+        }
+        const user = await User.findOne({ username })
+        const characters = await Character.find({ user_id: user.id })
+        res.status(200).json(characters)
+    } catch (err) {
         next(err)
     }
 })
