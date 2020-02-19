@@ -7,13 +7,15 @@ const jwt = require("jsonwebtoken")
 jest.mock("jsonwebtoken")
 
 const User = require("../models/user.model")
+const Character = require("../models/character.model")
+
 
 mongoose.set("useNewUrlParser", true);
 mongoose.set("useFindAndModify", false);
 mongoose.set("useCreateIndex", true);
 mongoose.set("useUnifiedTopology", true);
 
-describe("test cases for characters route", () => {
+describe("test cases for users route", () => {
     let mongoServer
     beforeAll(async () => {
         try {
@@ -40,12 +42,42 @@ describe("test cases for characters route", () => {
             username: "testuser2",
             password: "abcd1234",
         }];
+        const charactersData = [{
+            id: "1",
+            user_id: "1",
+            name: "testchar1",
+            job: "Warrior",
+            equipments: {
+                armor: "cloth",
+                weapon: "axe"
+            }
+        }, {
+            id: "2",
+            user_id: "1",
+            name: "testchar2",
+            job: "Thief",
+            equipments: {
+                armor: "cloth",
+                weapon: "knife"
+            }
+        }, {
+            id: "3",
+            user_id: "2",
+            name: "testchar3",
+            job: "Mage",
+            equipments: {
+                armor: "cloth",
+                weapon: "wooden staff"
+            }
+        }]
         await User.create(usersData);
+        await Character.create(charactersData)
     });
 
     afterEach(async () => {
         jest.resetAllMocks()
         await User.deleteMany()
+        await Character.deleteMany()
     })
 
     describe("/users/register", () => {
@@ -135,6 +167,38 @@ describe("test cases for characters route", () => {
                 .get("/users/testuser1")
                 .expect(401)
             expect(error.error).toEqual("You are not authorized!")
+        })
+    })
+
+    describe("/users/:username/characters", () => {
+        it("GET should return all characters under the user", async () => {
+            const expectedUser = {
+                username: "testuser1"
+            }
+            const expectedCharacters = [{
+                id: "1",
+                name: "testchar1",
+                job: "Warrior",
+                equipments: {
+                    armor: "cloth",
+                    weapon: "axe"
+                }
+            }, {
+                id: "2",
+                name: "testchar2",
+                job: "Thief",
+                equipments: {
+                    armor: "cloth",
+                    weapon: "knife"
+                }
+            }]
+            jwt.verify.mockReturnValueOnce({ name: expectedUser.username })
+            const { body: characters } = await request(app)
+                .get("/users/testuser1/characters")
+                .set("Cookie", "token=valid-token")
+                .expect(200)
+            console.log(characters)
+            expect(characters).toMatchObject(expectedCharacters)
         })
     })
 })

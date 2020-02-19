@@ -74,7 +74,8 @@ router.get("/:username/characters", protectRoute, async (req, res, next) => {
             throw new Error(INCORRECT_USER_MSG)
         }
         const user = await User.findOne({ username })
-        const characters = await Character.find({ user_id: user.id })
+        const USER_ID_FIELD_IN_CHARACTER_MODEL = "user_id"
+        const characters = await Character.find({ user_id: user.id }, `-_id -__v -${USER_ID_FIELD_IN_CHARACTER_MODEL}`)
         res.status(200).json(characters)
     } catch (err) {
         next(err)
