@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-
+const { protectRoute } = require("../middlewares/authentication")
 const bcrypt = require("bcryptjs")
 const User = require("../models/user.model")
 const { createJWToken } = require("../config/jwt")
@@ -46,6 +46,26 @@ router.post("/login", async (req, res, next) => {
         next(err);
     }
 })
+
+router.get("/:username", protectRoute, async (req, res, next) => {
+    const INCORRECT_USER_MSG = "Incorrect user!"
+    try {
+        const username = req.params.username
+        if (req.user.name !== username) {
+            throw new Error(INCORRECT_USER_MSG)
+        }
+
+        const user = await User.findOne({ username })
+        res.send(user)
+    } catch (err) {
+        if (err.message === INCORRECT_USER_MSG) {
+            err.statusCode = 403;
+        }
+
+        next(err)
+    }
+})
+
 
 router.use((err, req, res, next) => {
     if (err.name === "ValidationError") {

@@ -3,6 +3,9 @@ const app = require("../app")
 const mongoose = require("mongoose")
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
+const jwt = require("jsonwebtoken")
+jest.mock("jsonwebtoken")
+
 const User = require("../models/user.model")
 
 mongoose.set("useNewUrlParser", true);
@@ -29,7 +32,7 @@ describe("test cases for characters route", () => {
 
     beforeEach(async () => {
         const usersData = [{
-            user_id: "1",
+            id: "1",
             username: "testuser1",
             password: "abcd1234",
             characters: [{
@@ -42,7 +45,7 @@ describe("test cases for characters route", () => {
                 }
             }]
         }, {
-            user_id: "2",
+            id: "2",
             username: "testuser2",
             password: "abcd1234",
             characters: [{
@@ -67,6 +70,7 @@ describe("test cases for characters route", () => {
     });
 
     afterEach(async () => {
+        jest.resetAllMocks()
         await User.deleteMany()
     })
 
@@ -75,7 +79,7 @@ describe("test cases for characters route", () => {
             const { body: user } = await request(app)
                 .post("/users/register")
                 .send({
-                    user_id: 3,
+                    id: 3,
                     username: "testuser3",
                     password: "abcd1234"
                 })
@@ -124,6 +128,39 @@ describe("test cases for characters route", () => {
                 .send(wrongUser)
                 .expect(400)
             expect(message.error).toEqual("Login failed")
+        })
+    })
+
+    describe("/users/:username", () => {
+        test("GET username should display correct user details when correct user is logged", async () => {
+            const expectedUser = {
+                username: "testuser1"
+            }
+            jwt.verify.mockReturnValueOnce({ name: expectedUser.username })
+            const { body: user } = await request(app)
+                .get(`/users/${expectedUser.username}`)
+                .set("Cookie", "token=valid token")
+                .expect(200)
+            expect(user).toMatchObject(expectedUser)
+        })
+
+        test("GET username should respond with error message 'incorrect user' when different user try to access", async () => {
+            const wrongUser = {
+                username: "testuser1"
+            }
+            jwt.verify.mockReturnValueOnce({ name: wrongUser.username })
+            const { body: error } = await request(app)
+                .get("/users/testuser2")
+                .set("Cookie", "token=valid token")
+                .expect(403)
+            expect(error.error).toEqual("Incorrect user!")
+        })
+
+        test("GET should deny access when there are no token assigned/not logged in", async () => {
+            const { body: error } = await request(app)
+                .get("/users/testuser1")
+                .expect(401)
+            expect(error.error).toEqual("You are not authorized!")
         })
     })
 })
