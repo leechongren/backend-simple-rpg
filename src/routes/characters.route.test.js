@@ -3,7 +3,7 @@ const app = require("../app")
 const mongoose = require("mongoose")
 const { MongoMemoryServer } = require("mongodb-memory-server");
 
-const User = require("../models/user.model")
+const Character = require("../models/character.model")
 
 mongoose.set("useNewUrlParser", true);
 mongoose.set("useFindAndModify", false);
@@ -28,69 +28,48 @@ describe("test cases for characters route", () => {
     });
 
     beforeEach(async () => {
-        const usersData = [{
+        const charactersData = [{
             id: "1",
-            username: "testuser1",
-            password: "abcd1234",
-            characters: [{
-                character_id: "1",
-                name: "testchar1",
-                job: "Warrior",
-                equipments: {
-                    armor: "cloth",
-                    weapon: "axe"
-                }
-            }]
+            user_id: "1",
+            name: "testchar1",
+            job: "Warrior",
+            equipments: {
+                armor: "cloth",
+                weapon: "axe"
+            }
         }, {
             id: "2",
-            username: "testuser2",
-            password: "abcd1234",
-            characters: [{
-                character_id: "2",
-                name: "testchar2",
-                job: "Warrior",
-                equipments: {
-                    armor: "cloth",
-                    weapon: "sword"
-                }
-            }, {
-                character_id: "3",
-                name: "testchar3",
-                job: "Mage",
-                equipments: {
-                    armor: "cloth",
-                    weapon: "wand"
-                }
-            }]
+            user_id: "1",
+            name: "testchar2",
+            job: "Thief",
+            equipments: {
+                armor: "cloth",
+                weapon: "knife"
+            }
         }];
-        await User.create(usersData);
+        await Character.create(charactersData);
     });
 
     afterEach(async () => {
-        await User.deleteMany()
+        await Character.deleteMany()
     })
 
     describe("/characters", () => {
-        test("GET should display all existing characters", async () => {
+        it("GET should display all existing characters", async () => {
             const expectedData = [{
                 name: "testchar1",
                 job: "Warrior",
                 level: 1
             }, {
                 name: "testchar2",
-                job: "Warrior",
+                job: "Thief",
                 level: 1
 
-            }, {
-                name: "testchar3",
-                job: "Mage",
-                level: 1
             }]
 
             const { body: characters } = await request(app)
                 .get("/characters")
                 .expect(200)
-            console.log(characters)
             expect(characters).toEqual(expectedData)
         })
     })
