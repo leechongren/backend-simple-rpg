@@ -70,7 +70,7 @@ describe("test cases for monsters route", () => {
             expect(monsters).toMatchObject(expectedData)
         })
 
-        test.only("GET should display specific monster by ID", async () => {
+        test("GET should display specific monster by ID", async () => {
             const expectedMonster = [{
                 id: "2",
                 name: "Goblin",

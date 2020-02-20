@@ -256,4 +256,32 @@ describe("test cases for users route", () => {
             expect(character.MP).toBe(30)
         })
     })
+    describe("/users/:username/characters/:character_id", () => {
+        it("should GET the specific character by character id under the user", async () => {
+            const expectedUser = {
+                username: "testuser1"
+            }
+
+            const expectedCharacter = {
+                id: "2",
+                user_id: "1",
+                name: "testchar2",
+                job: "Thief",
+                equipments: {
+                    armor: "cloth",
+                    weapon: "knife"
+                },
+                HP: 30,
+                MP: 20
+            }
+
+            jwt.verify.mockReturnValueOnce({ name: expectedUser.username })
+            const { body: character } = await request(app)
+                .get("/users/testuser1/characters/2")
+                .set("Cookie", "token=valid-token")
+                .expect(200)
+            expect(character).toMatchObject(expectedCharacter)
+
+        })
+    })
 })
