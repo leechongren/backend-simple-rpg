@@ -82,6 +82,28 @@ router.get("/:username/characters", protectRoute, async (req, res, next) => {
     }
 })
 
+router.post("/:username/characters", protectRoute, async (req, res, next) => {
+    const INCORRECT_USER_MSG = "Incorrect user!"
+    try {
+        const username = req.params.username
+        if (req.user.name !== username) {
+            throw new Error(INCORRECT_USER_MSG)
+        }
+        const user = await User.findOne({ username })
+        const character = new Character(req.body)
+        const [warriorDefaultHp, thiefDefaultHp, mageDefaultHp] = [40, 30, 25]
+        const [warriorDefaultMp, thiefDefaultMp, mageDefaultMp] = [10, 20, 30]
+        character.user_id = user.id
+        if (character.job)
+            await Character.init()
+        const newCharacter = await character.save()
+        res.status(201).send(newCharacter)
+
+    } catch (err) {
+        next(err)
+    }
+})
+
 
 router.use((err, req, res, next) => {
     if (err.name === "ValidationError") {

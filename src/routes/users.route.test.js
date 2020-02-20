@@ -200,5 +200,36 @@ describe("test cases for users route", () => {
             console.log(characters)
             expect(characters).toMatchObject(expectedCharacters)
         })
+
+        it("POST should create a new character under the user", async () => {
+            const expectedUser = {
+                username: "testuser1"
+            }
+            const expectedCharacter = {
+                user_id: "1",
+                id: "4",
+                name: "new character",
+                job: "Thief",
+                equipments: {
+                    weapon: "none",
+                    armor: "none"
+                },
+                HP: 0,
+                MP: 0,
+                level: 1,
+                exp: 0
+            }
+            jwt.verify.mockReturnValueOnce({ name: expectedUser.username })
+            const { body: character } = await request(app)
+                .post("/users/testuser1/characters")
+                .send({
+                    id: "4",
+                    name: "new character",
+                    job: "Thief"
+                })
+                .set("Cookie", "token=valid-token")
+                .expect(201)
+            expect(character).toMatchObject(expectedCharacter)
+        })
     })
 })
