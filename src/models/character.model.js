@@ -3,10 +3,12 @@ const Schema = mongoose.Schema
 
 const equipmentSchema = new Schema({
     armor: {
-        type: String
+        type: String,
+        default: "none"
     },
     weapon: {
-        type: String
+        type: String,
+        default: "none"
     }
 }, { _id: false })
 
@@ -33,7 +35,17 @@ const characterSchema = new Schema({
         required: true
     },
 
-    equipments: equipmentSchema,
+    HP: {
+        type: Number,
+        default: 0
+    },
+
+    MP: {
+        type: Number,
+        default: 0
+    },
+
+    equipments: { type: equipmentSchema, default: equipmentSchema },
 
     level: {
         type: Number,
