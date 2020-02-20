@@ -29,13 +29,13 @@ describe("test cases for monsters route", () => {
 
     beforeEach(async () => {
         const monstersData = [{
-            monster_id: "1",
+            id: "1",
             name: "Rat",
             attack: 12,
             defence: 11,
             loot: ["potion", "cheese"]
         }, {
-            monster_id: "2",
+            id: "2",
             name: "Goblin",
             attack: 12,
             defence: 11,
@@ -51,13 +51,13 @@ describe("test cases for monsters route", () => {
     describe("/monsters", () => {
         test("GET should display all monsters info", async () => {
             const expectedData = [{
-                monster_id: "1",
+                id: "1",
                 name: "Rat",
                 attack: 12,
                 defence: 11,
                 loot: ["potion", "cheese"]
             }, {
-                monster_id: "2",
+                id: "2",
                 name: "Goblin",
                 attack: 12,
                 defence: 11,
@@ -70,11 +70,26 @@ describe("test cases for monsters route", () => {
             expect(monsters).toMatchObject(expectedData)
         })
 
+        test.only("GET should display specific monster by ID", async () => {
+            const expectedMonster = [{
+                id: "2",
+                name: "Goblin",
+                attack: 12,
+                defence: 11,
+                loot: ["potion", "short sword"]
+            }]
+
+            const { body: monster } = await request(app)
+                .get("/monsters/2")
+                .expect(200)
+            expect(monster).toMatchObject(expectedMonster)
+        })
+
         test("POST should create a new monster", async () => {
             const { body: monster } = await request(app)
                 .post("/monsters")
                 .send({
-                    monster_id: "3",
+                    id: "3",
                     name: "Wolf",
                     attack: 12,
                     defence: 11,

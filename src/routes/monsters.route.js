@@ -12,6 +12,15 @@ router.get("/", async (req, res, next) => {
     }
 })
 
+router.get("/:id", async (req, res, next) => {
+    try {
+        const monster = await Monster.find({ id: req.params.id })
+        res.status(200).send(monster)
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.post("/", async (req, res, next) => {
     try {
         const monster = new Monster(req.body)

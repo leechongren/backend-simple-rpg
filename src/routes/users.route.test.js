@@ -237,28 +237,7 @@ describe("test cases for users route", () => {
             expect(character).toMatchObject(expectedCharacter)
         })
 
-        it("should POST new Warrior with the correct Warrior stats", async () => {
-            const expectedUser = {
-                username: "testuser1"
-            }
-
-            jwt.verify.mockReturnValueOnce({ name: expectedUser.username })
-            const { body: character } = await request(app)
-                .post("/users/testuser1/characters")
-                .send({
-                    id: "4",
-                    name: "new character",
-                    job: "Warrior"
-                })
-                .set("Cookie", "token=valid-token")
-                .expect(201)
-            expect(character.HP).toBe(40)
-            expect(character.MP).toBe(10)
-
-
-        })
-
-        it("should POST new Mage with the correct Mage stats", async () => {
+        it("should POST new Character with the correct stats", async () => {
             const expectedUser = {
                 username: "testuser1"
             }
