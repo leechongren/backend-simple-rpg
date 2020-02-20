@@ -283,5 +283,41 @@ describe("test cases for users route", () => {
             expect(character).toMatchObject(expectedCharacter)
 
         })
+
+        it("should PATCH the new character stats", async () => {
+            const expectedUser = {
+                username: "testuser1"
+            }
+            const expectedCharacter = {
+                id: "1",
+                user_id: "1",
+                name: "testchar1",
+                job: "Warrior",
+                equipments: {
+                    armor: "holy armor",
+                    weapon: "holy axe"
+                },
+                HP: 30,
+                MP: 5,
+                exp: 20,
+                level: 2
+            }
+            jwt.verify.mockReturnValueOnce({ name: expectedUser.username })
+            const { body: newCharacter } = await request(app)
+                .patch("/users/testuser1/characters/1")
+                .send({
+                    level: 2,
+                    exp: 20,
+                    HP: 30,
+                    MP: 5,
+                    equipments: {
+                        weapon: "holy axe",
+                        armor: "holy armor"
+                    }
+                })
+                .set("Cookie", "token=valid-token")
+                .expect(201)
+            expect(newCharacter).toMatchObject(expectedCharacter)
+        })
     })
 })

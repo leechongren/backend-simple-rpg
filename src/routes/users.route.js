@@ -118,6 +118,31 @@ router.get("/:username/characters/:character_id", protectRoute, async (req, res,
     }
 })
 
+router.patch("/:username/characters/:character_id", protectRoute, async (req, res, next) => {
+    try {
+        const username = req.params.username
+        if (req.user.name !== username) {
+            throw new Error(INCORRECT_USER_MSG)
+        }
+        const update = {
+            level: req.body.level,
+            exp: req.body.exp,
+            HP: req.body.HP,
+            MP: req.body.MP,
+            equipments: {
+                armor: req.body.equipments.armor,
+                weapon: req.body.equipments.weapon
+            }
+        }
+        const user = await User.findOne({ username })
+        const filter = { user_id: user.id, id: req.params.character_id }
+        const newCharacterStats = await Character.findOneAndUpdate(filter, update, { new: true })
+        res.status(201).json(newCharacterStats)
+
+    } catch (err) {
+        next(err)
+    }
+})
 
 
 router.use((err, req, res, next) => {
