@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs")
 const User = require("../models/user.model")
 const { createJWToken } = require("../config/jwt")
 const Character = require("../models/character.model")
+const statsAssignTool = require("../config/statsAssignTool")
 //register new user
 router.post("/register", async (req, res, next) => {
     try {
@@ -91,11 +92,12 @@ router.post("/:username/characters", protectRoute, async (req, res, next) => {
         }
         const user = await User.findOne({ username })
         const character = new Character(req.body)
-        const [warriorDefaultHp, thiefDefaultHp, mageDefaultHp] = [40, 30, 25]
-        const [warriorDefaultMp, thiefDefaultMp, mageDefaultMp] = [10, 20, 30]
         character.user_id = user.id
-        if (character.job)
-            await Character.init()
+        const job = character.job
+        const statsArray = statsAssignTool(job)
+        character.HP = statsArray[0]
+        character.MP = statsArray[1]
+        await Character.init()
         const newCharacter = await character.save()
         res.status(201).send(newCharacter)
 

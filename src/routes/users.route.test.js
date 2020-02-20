@@ -50,7 +50,9 @@ describe("test cases for users route", () => {
             equipments: {
                 armor: "cloth",
                 weapon: "axe"
-            }
+            },
+            HP: 40,
+            MP: 10
         }, {
             id: "2",
             user_id: "1",
@@ -59,7 +61,9 @@ describe("test cases for users route", () => {
             equipments: {
                 armor: "cloth",
                 weapon: "knife"
-            }
+            },
+            HP: 30,
+            MP: 20
         }, {
             id: "3",
             user_id: "2",
@@ -68,7 +72,9 @@ describe("test cases for users route", () => {
             equipments: {
                 armor: "cloth",
                 weapon: "wooden staff"
-            }
+            },
+            HP: 25,
+            MP: 30
         }]
         await User.create(usersData);
         await Character.create(charactersData)
@@ -197,11 +203,10 @@ describe("test cases for users route", () => {
                 .get("/users/testuser1/characters")
                 .set("Cookie", "token=valid-token")
                 .expect(200)
-            console.log(characters)
             expect(characters).toMatchObject(expectedCharacters)
         })
 
-        it("POST should create a new character under the user", async () => {
+        it("POST should create a new character under the user containing the user_id from the user id", async () => {
             const expectedUser = {
                 username: "testuser1"
             }
@@ -214,8 +219,8 @@ describe("test cases for users route", () => {
                     weapon: "none",
                     armor: "none"
                 },
-                HP: 0,
-                MP: 0,
+                HP: 30,
+                MP: 20,
                 level: 1,
                 exp: 0
             }
@@ -230,6 +235,46 @@ describe("test cases for users route", () => {
                 .set("Cookie", "token=valid-token")
                 .expect(201)
             expect(character).toMatchObject(expectedCharacter)
+        })
+
+        it("should POST new Warrior with the correct Warrior stats", async () => {
+            const expectedUser = {
+                username: "testuser1"
+            }
+
+            jwt.verify.mockReturnValueOnce({ name: expectedUser.username })
+            const { body: character } = await request(app)
+                .post("/users/testuser1/characters")
+                .send({
+                    id: "4",
+                    name: "new character",
+                    job: "Warrior"
+                })
+                .set("Cookie", "token=valid-token")
+                .expect(201)
+            expect(character.HP).toBe(40)
+            expect(character.MP).toBe(10)
+
+
+        })
+
+        it("should POST new Mage with the correct Mage stats", async () => {
+            const expectedUser = {
+                username: "testuser1"
+            }
+
+            jwt.verify.mockReturnValueOnce({ name: expectedUser.username })
+            const { body: character } = await request(app)
+                .post("/users/testuser1/characters")
+                .send({
+                    id: "4",
+                    name: "new character",
+                    job: "Mage"
+                })
+                .set("Cookie", "token=valid-token")
+                .expect(201)
+            expect(character.HP).toBe(25)
+            expect(character.MP).toBe(30)
         })
     })
 })
