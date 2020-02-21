@@ -99,6 +99,18 @@ describe("test cases for users route", () => {
             expect(user.username).toBe("testuser3")
             expect(user.password).not.toBe("abcd1234")
         })
+
+        test("POST should generate error message when password length is < 8", async () => {
+            const { body: error } = await request(app)
+                .post("/users/register")
+                .send({
+                    id: 3,
+                    username: "testuser3",
+                    password: "abc1234"
+                })
+                .expect(400)
+            expect(error.error).toEqual(expect.stringContaining("User validation failed"))
+        })
     })
 
     describe("/users/login", () => {

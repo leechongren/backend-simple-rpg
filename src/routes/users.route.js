@@ -12,12 +12,19 @@ const INCORRECT_USER_MSG = "Incorrect user!"
 router.post("/register", async (req, res, next) => {
     try {
         const user = new User(req.body)
+
         await User.init()
         const newUser = await user.save()
         res.status(201).send(newUser)
     } catch (err) {
         next(err)
     }
+})
+
+
+
+router.post("/logout", async (req, res) => {
+    res.clearCookie("token").send("You are logged out")
 })
 
 router.post("/login", async (req, res, next) => {
@@ -92,8 +99,7 @@ router.post("/:username/characters", protectRoute, async (req, res, next) => {
         const user = await User.findOne({ username })
         const character = new Character(req.body)
         character.user_id = user.id
-        const job = character.job
-        const statsArray = statsAssignTool(job)
+        const statsArray = statsAssignTool(character.job)
         character.HP = statsArray[0]
         character.MP = statsArray[1]
         await Character.init()

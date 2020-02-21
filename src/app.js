@@ -2,8 +2,14 @@ const express = require("express")
 const app = express()
 const cookieParser = require("cookie-parser");
 require("dotenv").config() //read the env file
+const cors = require("cors")
 
+const corsOptions = {
+    origin: process.env.FRONTEND_URL || "http://localhost:3001",
+    credentials: true,
+}
 
+app.use(cors(corsOptions));
 app.use(express.json())
 app.use(cookieParser());
 
@@ -19,15 +25,14 @@ app.get("/", (req, res) => {
         "0": "GET /monsters",
         "1": "POST /monsters",
         "2": "GET /characters",
-        "3": "GET /characters?name= - find specific character",
-        "4": "POST /users/:username/characters",
-        "4": "GET /users/:username/characters",
-        "5": "GET /users/:username - profile page",
-        "6": "POST /users/login",
-        "7": "POST /users/register",
-        "8": "DELETE /users/:username",
-        "11": "GET /users/:username/battle",
-        "12": "PATCH /users/:username/profile",
+        "3": "POST /users/register",
+        "4": "POST /users/login",
+        "5": "GET /users/:username",
+        "6": "GET /users/:username/characters",
+        "7": "POST /users/:username/characters",
+        "8": "POST /users/:username/characters",
+        "9": "GET /users/:username/characters/:character_id",
+        "10": "PATCH /users/:username/characters/:character_id"
     })
 })
 
