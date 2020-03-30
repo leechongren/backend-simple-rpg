@@ -12,7 +12,6 @@ const INCORRECT_USER_MSG = "Incorrect user!"
 router.post("/register", async (req, res, next) => {
     try {
         const user = new User(req.body)
-
         await User.init()
         const newUser = await user.save()
         res.status(201).send(newUser)
